@@ -8,10 +8,14 @@ def process_combined_data():
     load_dotenv()
     verifier = RumourVerifier()
     
-    output_file = 'c:/Users/wp/Desktop/1/CHECKED-master/dataset/processed/combined_processed.jsonl'
+    output_file = 'c:/Users/wp/Desktop/1/CHECKED-master/dataset/rundect/combined_processed.jsonl'
+    
+    # 确保输出目录存在
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+    print(f"输出文件将保存到: {output_file}")
     
     # 读取数据
-    with open('c:/Users/wp/Desktop/1/CHECKED-master/dataset/processed/combined.json', 'r', encoding='utf-8') as f:
+    with open('c:/Users/wp/Desktop/1/CHECKED-master/dataset/rundect/combined.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
     
     # 处理每条数据并实时保存
@@ -22,10 +26,10 @@ def process_combined_data():
                     result = verifier.verify(item['content'])
                     
                     # 更新数据
-                    item['td_rationale'] = result.cs_rationale
-                    item['td_pred'] = result.cs_pred
-                    item['cs_rationale'] = result.lg_rationale
-                    item['cs_pred'] = result.lg_pred
+                    item['td_rationale'] = result.lg_rationale
+                    item['td_pred'] = result.lg_pred
+                    item['cs_rationale'] = result.cs_rationale
+                    item['cs_pred'] = result.cs_pred
                     
                 except Exception as e:
                     print(f"处理内容时出错: {e}")

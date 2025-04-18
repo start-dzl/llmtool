@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 import os
 from langchain.output_parsers import PydanticOutputParser
 from langchain.prompts import PromptTemplate
-from langchain_community.chat_models import ChatOpenAI  # 更新导入路径
+from langchain_openai import ChatOpenAI  # 更新导入路径
 
 class RumourVerification(BaseModel):
     cs_rationale: str = Field(
@@ -15,12 +15,12 @@ class RumourVerification(BaseModel):
         pattern="^(real|fake)$",
         example="fake"
     )
-    lg_rationale: str = Field(
+    td_rationale: str = Field(
         description="基于特定视角提示（逻辑）的 LLM 推理过程",
         min_length=10, 
         example="从逻辑角度看，这个说法存在时间线上的矛盾..."
     )
-    lg_pred: str = Field(
+    td_pred: str = Field(
         description="lg_rationale 的预测结果（real/fake）",
         pattern="^(real|fake)$",
         example="real"
@@ -31,8 +31,8 @@ class RumourVerification(BaseModel):
             "example": {
                 "cs_rationale": "从常识角度看...",
                 "cs_pred": "fake",
-                "lg_rationale": "从逻辑角度看...",
-                "lg_pred": "real"
+                "td_rationale": "从逻辑角度看...",
+                "td_pred": "real"
             }
         }
 
@@ -40,7 +40,7 @@ class RumourVerifier:
     def __init__(self, model_config=None):
         if model_config is None:
             model_config = {
-                'model': os.getenv('MODEL_NAME', 'TianQing-72B'),
+                'model': os.getenv('LLM_MODEL_NAME'),
                 'base_url': os.getenv('BASE_URL'),
                 'api_key': os.getenv('API_KEY'),
                 'temperature': 0.0,
@@ -87,5 +87,13 @@ class RumourVerifier:
     
     def verify(self, content: str) -> RumourVerification:
         prompt = self.get_prompt(content)
-        output = self.model.predict(prompt)
-        return self.parser.parse(output)
+        output = self.model.invoke(prompt)
+        # 从 AIMessage 中提取 content
+        output_text = output.content if hasattr(output, 'content') else str(output)
+        return self.parser.parse(output_text)
+
+if __name__ == "__main__":
+    verifier = RumourVerifier()
+    content = "according to the report, the U.S government is doing a massive migration plan to help the less developed regions."
+    result = verifier.verify(content)
+    print(result)

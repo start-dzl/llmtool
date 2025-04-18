@@ -32,6 +32,7 @@ def process_file(file_path):
     with open(file_path, 'w', encoding='utf-8') as f:
         f.writelines(processed_lines)
 
-# 处理文件
-file_path = r'c:\Users\wp\Desktop\1\CHECKED-master\dataset\processed\combined_processed.jsonl'
-process_file(file_path)
+if __name__ == '__main__':
+    # 处理文件
+    file_path = r'c:\Users\wp\Desktop\1\CHECKED-master\dataset\processed\combined_processed.jsonl'
+    process_file(file_path)

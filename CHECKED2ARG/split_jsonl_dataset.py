@@ -2,7 +2,7 @@ import os
 import json
 import random
 
-def split_jsonl_dataset(input_file, output_dir, train_ratio=0.7, val_ratio=0.15):
+def split_jsonl_dataset(input_file, output_dir, train_ratio=0.5, val_ratio=0.25):
     # 读取jsonl文件
     data = []
     with open(input_file, 'r', encoding='utf-8') as f:

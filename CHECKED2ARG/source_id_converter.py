@@ -40,6 +40,7 @@ def process_file(input_file):
         if os.path.exists(backup_file):
             os.remove(backup_file)
 
-# 使用示例
-input_file = r'c:\Users\wp\Desktop\1\CHECKED-master\dataset\processed\combined_processed.jsonl'
-process_file(input_file)
+if __name__ == '__main__':
+    # 输入文件路径
+    input_file = r'c:\Users\wp\Desktop\1\CHECKED-master\dataset\processed\combined_processed.jsonl'
+    process_file(input_file)
